@@ -13,43 +13,37 @@
 
 int main(int argc, char *argv[])
 {
-	stack_t *stack = NULL;
+
+	char line[1024];
+	FILE *script;
 	unsigned int line_number = 0;
-	char *opcode, *filename, *line = NULL;
-	FILE *file;
+	char *opcode;
+	stack_t *stack = NULL;
 
 	if (argc != 2)
 	{
 		fprintf(stderr, "USAGE: monty file\n");
 		return (EXIT_FAILURE);
 	}
-	filename = argv[1];
-	file = fopen(filename, "r");
+	script = fopen(argv[1], "r");
 
-	if (file == NULL)
+	if (script == NULL)
 	{
-		fprintf(stderr, "Error: Can't open file %s\n", filename);
+		fprintf(stderr, "Error: Can't open file %s\n", argv[1]);
 		return (EXIT_FAILURE);
 	}
-	while (fgets(line, MAX_LINE_LENGTH, file) != NULL)
+	while (fgets(line, sizeof(line), script) != NULL)
 	{
 		line_number++;
-		opcode = strtok(line, " \n");
-		if (opcode != NULL && opcode[0] != '#')
+		if (strlen(line) > 1)
 		{
-			instruction_t instruction = get_instruction(opcode);
+			opcode = strtok(line, " \n");
 
-			if (instruction.f == NULL)
-			{
-				fprintf(stderr, "L%d: unknown instruction %s\n", line_number, opcode);
-				free(line);
-				fclose(file);
-				return (EXIT_FAILURE);
-			}
-			instruction.f(&stack, line_number);
+			if (opcode != NULL && opcode[0] != '#')
+				execute_instruction(opcode, &stack, line_number);
 		}
 	}
-	free(line);
-	fclose(file);
+	fclose(script);
+
 	return (EXIT_SUCCESS);
 }

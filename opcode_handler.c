@@ -1,31 +1,37 @@
 #include "monty.h"
 
 /**
- * get_instruction - Retrieves instruction associated with the given opcode.
+ * execute_instruction - Retrieves instruction associated with given opcode.
  *
  * @opcode: The opcode for which to retrieve the instruction.
+ * @stack: stack
+ * @line_number: unsigned int
  *
  * Return: instruction_t struct representing instruction associated with opcode
  *         If the opcode is not recognized, the returned instruction_t struct
  *         will have a NULL function pointer.
  */
 
-instruction_t get_instruction(char *opcode)
+void execute_instruction(char *opcode, stack_t **stack,
+				unsigned int line_number)
 {
+	size_t z;
 	instruction_t instructions[] = {
 		{"push", push},
 		{"pall", pall},
 		{"pint", pint},
 
-		{NULL, NULL}};
+		{NULL, NULL}
+	};
 
-	int z = 0;
-
-	while (instructions[z].opcode != NULL)
+	for (z = 0; instructions[z].opcode != NULL; z++)
 	{
 		if (strcmp(opcode, instructions[z].opcode) == 0)
-			return (instructions[z]);
-		z++;
+		{
+			instructions[z].f(stack, line_number);
+			return;
+		}
 	}
-	return (instructions[z]);
+	fprintf(stderr, "L%u: unknown instruction %s\n", line_number, opcode);
+	exit(EXIT_FAILURE);
 }
