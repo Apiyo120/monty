@@ -1,5 +1,16 @@
+#include "monty.h"
+
+/**
+ * pop - Removes the top element from the stack.
+ * @stack: A pointer to a pointer to the stack.
+ * @line_number: The line number where the function is called
+ */
+
 void pop(stack_t **stack, unsigned int line_number)
 {
+
+	stack_t *temp;
+
 	if	(*stack == NULL)
 
 	{
@@ -7,7 +18,7 @@ void pop(stack_t **stack, unsigned int line_number)
 		exit(EXIT_FAILURE);
 	}
 
-	stack_t *temp = *stack;
+	temp = *stack;
 	*stack = (*stack)->next;
 
 	if	(*stack != NULL)
