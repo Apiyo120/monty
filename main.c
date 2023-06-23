@@ -19,6 +19,7 @@ int main(int argc, char *argv[])
 	unsigned int line_number = 0;
 	char *opcode;
 	stack_t *stack = NULL;
+	stack_t *temp;
 
 	if (argc != 2)
 	{
@@ -44,6 +45,11 @@ int main(int argc, char *argv[])
 		}
 	}
 	fclose(script);
-
+	while (stack != NULL)
+	{
+		temp = stack;
+		stack = stack->next;
+		free(temp);
+	}
 	return (EXIT_SUCCESS);
 }
